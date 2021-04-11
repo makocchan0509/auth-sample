@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: auth-app
+    Opa: filterEnable
+  name: auth-app
+spec:
+  containers:
+  - image: authapp:0.3
+    name: app
+    ports:
+      - containerPort: 8080
+    env:
+      - name: APP_PORT
+        value: "8080"
+      - name: KEY_URL
+        value: http://keycloak-svc:8080/auth/realms/demo/protocol/openid-connect/token
+      - name: CLIENT_ID
+        value: demo_application
+      - name: CLIENT_SECRET
+        value: e420306e-333c-4648-9e52-676d6e9e3ea2
+      - name: SVC_URL
+        value: http://external-svc:8080/externalservice
+  - image: openpolicyagent/opa:0.27.1-envoy
+    imagePullPolicy: IfNotPresent
+    name: opa-envoy
+    volumeMounts:
+    - mountPath: /config
+      name: opa-envoy-config
+    - mountPath: /policy
+      name: opa-policy
+    ports:
+      - containerPort: 8181
+      - containerPort: 8282
+    args:
+    - "run"
+    - "--server"
+    - "--addr=localhost:8181"
+    - "--diagnostic-addr=0.0.0.0:8282"
+    - "--config-file=/config/config.yaml"
+    - "--ignore=.*"
+    - "/policy/policy.rego"
+    livenessProbe:
+      httpGet:
+        path: /health?plugins
+        port: 8282
+    readinessProbe:
+      httpGet:
+        path: /health?plugins
+        port: 8282
+  volumes:
+    - name: opa-policy
+      configMap:
+        name: opa-policy
+    - name: opa-envoy-config
+      configMap:
+        name: opa-envoy-config
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}

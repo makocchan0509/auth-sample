@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: opa-policy
+data:
+  policy.rego: |
+    package envoy.authz
+
+    import input.attributes.request.http as http_request
+    import input.parsed_path
+
+    default allow = false
+
+    allow {
+        glob.match("/auth*", [], http_request.path)
+    }
+
+    allow {
+        glob.match("/authorization", [], http_request.path)
+    }
+
+    allow {
+      is_token_valid
+      action_allowed
+    }
+
+    is_token_valid {
+      [_,encoded] := split(http_request.headers.authorization, " ")
+      [header,payload,sig] := io.jwt.decode(encoded)
+      now := time.now_ns() / 1000000000
+      now < payload.exp
+    }   
+
+    action_allowed {
+      [_,encoded] := split(http_request.headers.authorization, " ")
+      [header,payload,sig] := io.jwt.decode(encoded)
+      s = payload.sub
+      r = payload.realm_access
+      b = {"sub":s,"roles":r}
+
+      response := http.send({
+        "url": "http://auther-svc:8080/authorization", 
+        "method": "POST",
+        "body": b
+      })
+      response.status_code == 200
+    }

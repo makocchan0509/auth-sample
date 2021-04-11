@@ -1,0 +1,70 @@
+    package envoy.authz
+
+    import input.attributes.request.http as http_request
+    import input.parsed_path
+
+    default allow = false
+
+    allow {
+        glob.match("/auth*", [], http_request.path)
+    }
+
+    token = {"valid": valid, "payload": payload} {
+        [_, encoded] := split(http_request.headers.authorization, " ")
+        [valid, _, payload] := io.jwt.decode_verify(encoded, {"secret": "secret"})
+    }
+
+    allow {
+        is_token_valid
+        action_allowed
+    }
+
+    is_token_valid {
+      token.valid
+      now := time.now_ns() / 1000000000
+      token.payload.nbf <= now
+      now < token.payload.exp
+    }
+
+    action_allowed {
+      response := http.send({
+        "url": "http://auther-svc:8080/authorization",
+        "method": "POST",
+        "body": "{\"Sub\",\"aaa\"}"
+      })
+      response.status_code == 200
+    }
+
+
+allow {
+	is_token_valid
+    action_allowed
+}
+
+is_token_valid {
+	[_,encoded] := split(http_request.headers.authorization, " ")
+    #t := split(encoded,".")
+    [header,payload,sig] := io.jwt.decode(encoded)
+    #t := io.jwt.decode(encoded)
+	#t := io.jwt.decode_verify(encoded,  {"secret": "secret"})
+    now := time.now_ns() / 1000000000
+    #payload.nbf <= now
+    now < payload.exp
+}
+
+action_allowed[a] {
+	[_,encoded] := split(http_request.headers.authorization, " ")
+    #t := split(encoded,".")
+    [header,payload,sig] := io.jwt.decode(encoded)
+	#a = payload.sub
+    a = payload.realm_access
+}
+
+http[h] {
+	[_,encoded] := split(http_request.headers.authorization, " ")
+    #t := split(encoded,".")
+    [header,payload,sig] := io.jwt.decode(encoded)
+	s = payload.sub
+    r = payload.realm_access.roles
+    h = {"sub":s,"roles":r}
+}
