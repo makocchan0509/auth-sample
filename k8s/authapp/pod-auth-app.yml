@@ -8,7 +8,7 @@ metadata:
   namespace: auth
 spec:
   containers:
-  - image: authapp:0.3
+  - image: gcr.io/devops-projects-20210212/auth-app:v1.0.0
     name: app
     ports:
       - containerPort: 8080
