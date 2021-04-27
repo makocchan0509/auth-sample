@@ -1,6 +1,6 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '--tag=gcr.io/$PROJECT_ID/auth-app:$TAG_NAME', '.']
+  args: ['build', '--tag=gcr.io/$PROJECT_ID/auth-app:1.0.0', '.']
 - name: 'gcr.io/cloud-builders/gsutil'
   args: ['cp', '-r', 'k8s/*', 'gs://$PROJECT_ID-auth-app/']
-images: ['gcr.io/$PROJECT_ID/auth-app:$TAG_NAME']
+images: ['gcr.io/$PROJECT_ID/auth-app:1.0.0']
