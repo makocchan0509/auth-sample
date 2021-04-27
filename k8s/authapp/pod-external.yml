@@ -21,7 +21,7 @@ spec:
       - name: CLIENT_SECRET
         value: e420306e-333c-4648-9e52-676d6e9e3ea2
       - name: SVC_URL
-        value: http://localhost:8080/authorization
+        value: http://external-svc:8080/externalservice
   dnsPolicy: ClusterFirst
   restartPolicy: Always
 status: {}
