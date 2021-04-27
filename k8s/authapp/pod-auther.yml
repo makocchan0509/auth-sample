@@ -7,7 +7,7 @@ metadata:
   namespace: auth
 spec:
   containers:
-  - image: gcr.io/devops-projects-20210212/auth-app:v1.0.0
+  - image: gcr.io/devops-projects-20210212/auth-app:v1.0.1
     name: auther
     ports:
       - containerPort: 8080
@@ -21,7 +21,7 @@ spec:
       - name: CLIENT_SECRET
         value: e420306e-333c-4648-9e52-676d6e9e3ea2
       - name: SVC_URL
-        value: http://localhost:8080/authorization
+        value: http://external-svc:8080/externalservice
   dnsPolicy: ClusterFirst
   restartPolicy: Always
 status: {}
