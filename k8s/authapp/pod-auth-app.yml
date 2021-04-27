@@ -5,6 +5,7 @@ metadata:
     run: auth-app
     Opa: filterEnable
   name: auth-app
+  namespace: auth
 spec:
   containers:
   - image: authapp:0.3

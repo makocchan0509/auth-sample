@@ -4,6 +4,7 @@ metadata:
   labels:
     run: auther-app
   name: auther-app
+  namespace: auth
 spec:
   containers:
   - image: authapp:0.3

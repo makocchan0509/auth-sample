@@ -4,6 +4,7 @@ metadata:
   labels:
     run: keycloak
   name: keycloak
+  namespace: auth
 spec:
   containers:
   - image: jboss/keycloak

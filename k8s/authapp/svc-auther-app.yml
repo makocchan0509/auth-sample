@@ -2,13 +2,13 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    Opa: filterEnable
     istio.io/rev: default
-    run: auth-app
+    run: auther-app
     security.istio.io/tlsMode: istio
-    service.istio.io/canonical-name: auth-app
+    service.istio.io/canonical-name: auther-app
     service.istio.io/canonical-revision: latest
-  name: auth-svc
+  name: auther-svc
+  namespace: auth
 spec:
   ports:
   - name: port-1
@@ -16,23 +16,14 @@ spec:
     protocol: TCP
     targetPort: 8080
   - name: port-2
-    port: 8181
-    protocol: TCP
-    targetPort: 8181
-  - name: port-3
-    port: 8282
-    protocol: TCP
-    targetPort: 8282
-  - name: port-4
     port: 15090
     protocol: TCP
     targetPort: 15090
   selector:
-    Opa: filterEnable
     istio.io/rev: default
-    run: auth-app
+    run: auther-app
     security.istio.io/tlsMode: istio
-    service.istio.io/canonical-name: auth-app
+    service.istio.io/canonical-name: auther-app
     service.istio.io/canonical-revision: latest
 status:
   loadBalancer: {}

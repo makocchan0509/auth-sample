@@ -1,0 +1,7 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '--tag=gcr.io/$PROJECT_ID/auth-app:$TAG_NAME', '.']
+- name: 'gcr.io/cloud-builders/gsutil'
+  args: ['cp', '-r', 'k8s/*', 'gs://devops-projects-20210212-auth-app/']
+images: ['gcr.io/$PROJECT_ID/auth-app:$TAG_NAME']
+
