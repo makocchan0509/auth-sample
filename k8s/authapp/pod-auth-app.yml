@@ -53,10 +53,10 @@ spec:
   volumes:
     - name: opa-policy
       configMap:
-        name: opa-policy
+        name: opa-policy-v000
     - name: opa-envoy-config
       configMap:
-        name: opa-envoy-config
+        name: opa-envoy-config-v000
   dnsPolicy: ClusterFirst
   restartPolicy: Always
 status: {}
