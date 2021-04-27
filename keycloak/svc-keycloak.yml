@@ -1,7 +1,6 @@
 apiVersion: v1
 kind: Service
 metadata:
-  creationTimestamp: null
   labels:
     istio.io/rev: default
     run: keycloak
@@ -9,6 +8,7 @@ metadata:
     service.istio.io/canonical-name: keycloak
     service.istio.io/canonical-revision: latest
   name: keycloak-svc
+  namespace: auth
 spec:
   ports:
   - name: port-1

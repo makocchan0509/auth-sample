@@ -8,6 +8,7 @@ metadata:
     service.istio.io/canonical-name: external-app
     service.istio.io/canonical-revision: latest
   name: external-svc
+  namespace: auth
 spec:
   ports:
   - name: port-1
